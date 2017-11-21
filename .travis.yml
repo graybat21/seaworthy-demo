@@ -1,0 +1,13 @@
+sudo: required
+language: python
+services: docker
+
+before_install:
+  - pip install -U pip
+install:
+  - pip install -r seaworthy/requirements.txt
+
+script:
+  - docker build -t seaworthy-demo:django django
+  - docker build -t seaworthy-demo:nginx nginx
+  - (cd seaworthy; pytest -v test.py)
