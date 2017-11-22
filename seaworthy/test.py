@@ -30,7 +30,7 @@ class TestDjangoContainer:
 
 
 class TestNginxContainer:
-    def test_admin_page(self, nginx_container, django_container):
+    def test_admin_page(self, nginx_container):
         """
         When we try to access a page served by Django, for example, the Django
         admin page, that page is returned via Nginx.
@@ -42,7 +42,7 @@ class TestNginxContainer:
         assert mime_type(response.headers["content-type"]) == "text/html"
         assert "<title>Log in | Django site admin</title>" in response.text
 
-    def test_static_file(self, nginx_container, django_container):
+    def test_static_file(self, nginx_container):
         """
         When we try to access a file served directly by Nginx, for example, a
         static file, that file is returned by Nginx.
@@ -53,7 +53,7 @@ class TestNginxContainer:
         assert response.status_code == 200
         assert mime_type(response.headers["content-type"]) == "image/gif"
 
-    def test_access_logs(self, nginx_container, django_container):
+    def test_access_logs(self, nginx_container):
         """
         When we make a request against Nginx, the request is logged to the
         access log which is output to stdout.
