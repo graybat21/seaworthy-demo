@@ -19,9 +19,12 @@ install:
 
 before_script:
   - image="$IMAGE_USER/seaworthy-demo"
+  # Pull the existing images to use as a cache
+  - docker pull "$image:django" || true
+  - docker pull "$image:nginx" || true
 script:
-  - docker build -t "$image:django" django
-  - docker build -t "$image:nginx" nginx
+  - docker build --pull --cache-from "$image:django" -t "$image:django" django
+  - docker build --pull --cache-from "$image:nginx" -t "$image:nginx" nginx
   - (cd seaworthy; pytest -v --django-image "$image:django" --nginx-image "$image:nginx" test.py)
 
 before_deploy:
