@@ -20,15 +20,15 @@ install:
 before_script:
   - image="$IMAGE_USER/seaworthy-demo"
 script:
-  - docker build -t "$IMAGE:django" django
-  - docker build -t "$IMAGE:nginx" nginx
-  - (cd seaworthy; pytest -v test.py)
+  - docker build -t "$image:django" django
+  - docker build -t "$image:nginx" nginx
+  - (cd seaworthy; pytest -v --django-image "$image:django" --nginx-image "$image:nginx" test.py)
 
 before_deploy:
   - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
   - pip install docker-ci-deploy==0.3.0
 deploy:
   provider: script
-  script: dcd -V $(git rev-parse --short HEAD) -L "$IMAGE:django" "$IMAGE:nginx"
+  script: dcd -V $(git rev-parse --short HEAD) -L "$image:django" "$image:nginx"
   on:
     branch: master

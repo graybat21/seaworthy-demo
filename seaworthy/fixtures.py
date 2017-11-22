@@ -1,19 +1,19 @@
-import os
 import time
 
+import pytest
 from seaworthy.definitions import ContainerDefinition, VolumeDefinition
 from seaworthy.containers.postgresql import PostgreSQLContainer
 from seaworthy.logs import output_lines
 
-nginx_image = os.environ.get("NGINX_IMAGE", "seaworthy-demo:nginx")
-django_image = os.environ.get("DJANGO_IMAGE", "seaworthy-demo:django")
+DJANGO_IMAGE = pytest.config.getoption("--django-image")
+NGINX_IMAGE = pytest.config.getoption("--nginx-image")
 
 
 class DjangoContainer(ContainerDefinition):
     WAIT_PATTERNS = (r"Booting worker",)
 
     def __init__(self, name, gunicorn_volume, static_volume, db_url,
-                 image=django_image):
+                 image=DJANGO_IMAGE):
         super().__init__(name, image, self.WAIT_PATTERNS)
         self.gunicorn_volume = gunicorn_volume
         self.static_volume = static_volume
@@ -34,7 +34,7 @@ class DjangoContainer(ContainerDefinition):
 
 class NginxContainer(ContainerDefinition):
     def __init__(self, name, gunicorn_volume, static_volume,
-                 image=nginx_image):
+                 image=NGINX_IMAGE):
         super().__init__(name, image)
         self.gunicorn_volume = gunicorn_volume
         self.static_volume = static_volume
