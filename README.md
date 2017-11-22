@@ -1,5 +1,6 @@
 # seaworthy-demo
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/jamiehewland/seaworthy-demo.svg)](https://hub.docker.com/r/jamiehewland/seaworthy-demo/)
 [![Build Status](https://travis-ci.org/JayH5/seaworthy-demo.svg?branch=master)](https://travis-ci.org/JayH5/seaworthy-demo)
 
 A demo of [Seaworthy](https://github.com/praekeltfoundation/seaworthy) for my

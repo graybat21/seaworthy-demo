@@ -6,12 +6,29 @@ python: '3.6'
 branches:
   only: [master]
 
+env:
+  global:
+    - IMAGE_USER=jamiehewland
+    - REGISTRY_USER=jamiehewland
+    - secure: "SQnAyjnZlGMvGV9648z0MEbqwjXfc0N/8IG/X1Pwtpo3o/vRRmfVF3qftm08za5S7dX0fWmOOIIV01MRHXXwcXgXZJC6Yo8H4WIXPySPkRCVovuYcuLt+X2tKTTpgS5WZpYBqtCfSRcfFg68mw9lG1eSdNhd9OAdqTQeR4EFTLHEeeRSvWJLC/Ps9jKW578/NwTYrEeBbNmMixc9pwdDS6U5UXk+nV9Yy+8mr3YphF+0oYt98edhZht+N12NN2fq+tVWXe8yF12rXmuiBycLXGEhdi9vmGBAIbKIYwJlt4pr19j8yIeYtCDrX7p970iBtP/9WnUYirMXq/2teu14BpWJVUJ+YGTv9KkitLsIx5nvAP3m7S1giH5CjekCRSi79XJqSCktwe9dOxF/9+Afg9zNA9WVJt4mEEt90Oph2nrK5tT222vXiJGDuljtCs4qmcAxQQ/F26VThHc1nPmMk8xJf+52Ihkdm4nst24L9veHVYmtpCJgIKQuvur0L3PicOSePKWhz62I/iPXp6Q6fXB5UG9tmAtPuYMeG7T+6IncjSCuP50xOqT0tqm8DiOA7M2jbxut9qhysR5BTsEA3QXPDHjNwMq8NAOU+OATY+gV+l9aex/KH3nWoDh4DYerd5fQ6goeSgRZmPW6Q5LMC96nJnEZ2fPxoAloMw0G2eE="
+
 before_install:
   - pip install -U pip
 install:
   - pip install -r seaworthy/requirements.txt
 
+before_script:
+  - image="$IMAGE_USER/seaworthy-demo"
 script:
-  - docker build -t seaworthy-demo:django django
-  - docker build -t seaworthy-demo:nginx nginx
+  - docker build -t "$IMAGE:django" django
+  - docker build -t "$IMAGE:nginx" nginx
   - (cd seaworthy; pytest -v test.py)
+
+before_deploy:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - pip install docker-ci-deploy==0.3.0
+deploy:
+  provider: script
+  script: dcd -V $(git rev-parse --short HEAD) -L "$IMAGE:django" "$IMAGE:nginx"
+  on:
+    branch: master
