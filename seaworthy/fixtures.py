@@ -83,7 +83,8 @@ django_fixture = django_container.pytest_fixture(
 
 nginx_container = NginxContainer("nginx", gunicorn_volume, static_volume)
 nginx_fixture = nginx_container.pytest_fixture(
-    "nginx_container", dependencies=["gunicorn_volume", "static_volume"])
+    "nginx_container",
+    dependencies=["gunicorn_volume", "static_volume", "django_container"])
 
 # Allow all the fixtures to be imported like `from fixtures import *`
 __all__ = [
