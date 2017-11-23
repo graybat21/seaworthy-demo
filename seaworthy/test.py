@@ -70,5 +70,5 @@ class TestNginxContainer:
 
         [log_line] = new_logs
         assert (
-            'GET /static/icecream/images/background.gif HTTP/1.1' in log_line)
+            "GET /static/icecream/images/background.gif HTTP/1.1" in log_line)
         assert str(response.status_code) in log_line
