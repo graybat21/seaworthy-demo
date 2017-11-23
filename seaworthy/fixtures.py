@@ -25,7 +25,10 @@ class DjangoContainer(ContainerDefinition):
                 self.socket_volume.inner(): "/var/run/gunicorn",
                 self.static_volume.inner(): "/app/static:ro",
             },
-            "environment": {"DATABASE_URL": self.db_url}
+            "environment": {
+                "DATABASE_URL": self.db_url,
+                "ALLOWED_HOSTS": "0.0.0.0",
+            },
         }
 
     def exec_django_admin(self, *args):
@@ -45,7 +48,7 @@ class NginxContainer(ContainerDefinition):
                 self.gunicorn_volume.inner(): "/var/run/gunicorn",
                 self.static_volume.inner(): "/usr/share/nginx/static:ro",
             },
-            "ports": {"80/tcp": ("127.0.0.1", None)},
+            "ports": {"80/tcp": None},
         }
 
     def wait_for_start(self):
