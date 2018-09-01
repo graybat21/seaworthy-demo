@@ -25,7 +25,7 @@ class TestDjangoContainer:
             ("SELECT COUNT(*) FROM information_schema.tables WHERE "
              "table_schema='public';"))
 
-        count = int(psql_output.strip())
+        count = int(str(psql_output).strip())
         assert count > 0
 
 
